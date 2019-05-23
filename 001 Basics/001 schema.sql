@@ -16,7 +16,7 @@ create table membership.users (
 	status varchar(10) not null default 'pending'
 );
 
-create view membership.pending_users as
+create view membership.pending_users as 
 select * from membership.users where status = 'pending';
 
 insert into membership.users(email, first, last)

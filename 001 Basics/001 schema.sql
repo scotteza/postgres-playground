@@ -7,8 +7,15 @@ drop function if exists the_time();
 
 create schema membership;
 
+create or replace function random_string(len int) returns text as
+$$
+	select substring(md5(random()::text), 0, len) as result
+$$
+language sql;
+
 create table membership.users (
 	id serial primary key not null,
+	user_key varchar(18) null default random_string(18 ),
 	email varchar(255) unique not null,
 	first varchar(50),
 	last varchar(50),

@@ -20,8 +20,14 @@ create table membership.users (
 	first varchar(50),
 	last varchar(50),
 	created_at timestamptz not null default now(),
-	status varchar(10) not null default 'pending'
+	status varchar(10) not null default 'pending',
+	search_field tsvector not null
 );
+
+create trigger users_search_update_refresh
+before insert or update on membership.users
+for each row execute procedure
+tsvector_update_trigger(search_field, 'pg_catalog.english', email, first, last);
 
 create view membership.pending_users as 
 select * from membership.users where status = 'pending';
@@ -29,4 +35,7 @@ select * from membership.users where status = 'pending';
 insert into membership.users(email, first, last)
 values ('test@test.com', 'Scott', 'Edwards');
 
-select * from membership.pending_users;
+select * from membership.users
+where to_tsvector(concat(email, ' ', first, ' ', last)) @@ to_tsquery('scott & edwards')
+and search_field @@ to_tsquery('scott & ! smith')
+and search_field @@ to_tsquery('scott & edwa:*');

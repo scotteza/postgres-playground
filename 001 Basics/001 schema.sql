@@ -1,16 +1,25 @@
-﻿drop table if exists users;
+﻿drop view if exists membership.pending_users ;
+drop table if exists membership.users;
+
+drop schema if exists membership;
 
 drop function if exists the_time();
 
-create table users (
+create schema membership;
+
+create table membership.users (
 	id serial primary key not null,
 	email varchar(255) unique not null,
 	first varchar(50),
 	last varchar(50),
-	created_at timestamptz not null default now()
+	created_at timestamptz not null default now(),
+	status varchar(10) not null default 'pending'
 );
 
-insert into users(email, first, last)
+create view membership.pending_users as
+select * from membership.users where status = 'pending';
+
+insert into membership.users(email, first, last)
 values ('test@test.com', 'Scott', 'Edwards');
 
-select * from users;
+select * from membership.pending_users;

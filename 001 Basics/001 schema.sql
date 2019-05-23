@@ -1,16 +1,13 @@
 ﻿drop table if exists users;
 
-create or replace function the_time() returns timestamptz as
-$$
-	select now() as result;
-$$ language sql;
+drop function if exists the_time();
 
 create table users (
 	id serial primary key not null,
 	email varchar(255) unique not null,
 	first varchar(50),
 	last varchar(50),
-	created_at timestamptz not null default the_time()
+	created_at timestamptz not null default now()
 );
 
 insert into users(email, first, last)

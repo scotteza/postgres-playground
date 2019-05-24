@@ -1,5 +1,8 @@
 ﻿drop view if exists membership.pending_users ;
+
+drop table if exists membership.users_roles;
 drop table if exists membership.users;
+drop table if exists membership.roles;
 
 drop schema if exists membership;
 
@@ -24,6 +27,17 @@ create table membership.users (
 	search_field tsvector not null
 );
 
+create table membership.roles(
+	id serial primary key not null,
+	name varchar(50) not null
+);
+
+create table membership.users_roles (
+	user_id int not null references membership.users(id) on delete cascade,
+	role_id int not null references membership.roles(id) on delete cascade,
+	primary key(user_id, role_id)
+);
+
 create trigger users_search_update_refresh
 before insert or update on membership.users
 for each row execute procedure
@@ -34,6 +48,12 @@ select * from membership.users where status = 'pending';
 
 insert into membership.users(email, first, last)
 values ('test@test.com', 'Scott', 'Edwards');
+
+insert into membership.roles(name)
+values('Administrator');
+
+insert into membership.users_roles(user_id, role_id)
+values(1, 1);
 
 select * from membership.users
 where to_tsvector(concat(email, ' ', first, ' ', last)) @@ to_tsquery('scott & edwards')

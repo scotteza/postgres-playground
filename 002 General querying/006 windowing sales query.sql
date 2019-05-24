@@ -18,4 +18,23 @@ from
 	inner join rental r on r.inventory_id = i.inventory_id
 	inner join payment p on p.rental_id = r.rental_id;
 
-select * from raw_sales;
+with sales_rollup as
+	(select distinct
+		title,
+		quarter,
+		year,
+		qyear,
+		sum(amount) over (partition by title, qyear) as quarterly_sales,
+		sum(amount) over (partition by qyear) as total_quarterly_sales,
+		sum(amount) over (partition by title, qyear) / sum(amount) over (partition by qyear) * 100 as percent_of_total_quarterly_sales
+	from
+		raw_sales
+	order by
+		title)
+select
+	qyear,
+	trunc(sum(sr.percent_of_total_quarterly_sales))
+from
+	sales_rollup sr
+group by
+	qyear

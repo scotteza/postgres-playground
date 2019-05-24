@@ -1,4 +1,4 @@
-﻿create or replace view raw_sales as
+create or replace view raw_sales as
 select
 	f.title,
 	f.description,

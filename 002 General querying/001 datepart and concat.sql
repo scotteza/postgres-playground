@@ -7,4 +7,4 @@
 from
 	payment p
 order by
-	payment_date
+	payment_date 

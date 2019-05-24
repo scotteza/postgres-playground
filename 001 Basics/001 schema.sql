@@ -55,6 +55,12 @@ values('Administrator');
 insert into membership.users_roles(user_id, role_id)
 values(1, 1);
 
+-- select * from membership.roles;
+
+delete from membership.roles;
+
+-- select * from membership.users_roles;
+
 select * from membership.users
 where to_tsvector(concat(email, ' ', first, ' ', last)) @@ to_tsquery('scott & edwards')
 and search_field @@ to_tsquery('scott & ! smith')

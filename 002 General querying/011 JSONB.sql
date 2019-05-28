@@ -5,6 +5,8 @@ create table if not exists film_docs(data jsonb);
 insert into film_docs(data)
 select row_to_json(film)::jsonb from film;
 
+create index on film_docs using GIN(data);
+
 select
 	(data ->> 'title') as Title,
 	(data -> 'length') as Length

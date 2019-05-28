@@ -11,4 +11,4 @@ select
 from
 	film_docs
 where
-	(data ->> 'title') = 'Chamber Italian';
+	data -> 'title' ? 'Chamber Italian';

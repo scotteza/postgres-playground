@@ -9,4 +9,6 @@ select
 	(data ->> 'title') as Title,
 	(data -> 'length') as Length
 from
-	film_docs;
+	film_docs
+where
+	(data ->> 'title') = 'Chamber Italian';
